@@ -18,8 +18,12 @@ from displayio_listselect import ListSelect
 class SpaceMinerGame(displayio.Group):
     ROUND_TIME = 20
 
-    FRAME_DELAY = 0.001 / 2
-    print(FRAME_DELAY)
+    FRAME_DELAY = 0.001 / 2  # was 2 = 500 uSecs
+    # print mods by @PaulskPt
+    print("\nFRAME_DELAY = ", end='')
+    n = int(FRAME_DELAY*1000000)+1 # +1 is correction because initial result was 499
+    print(n, end='')
+    print(" uSeconds")
 
     STATE_WAITING_TO_PLAY = 0
     STATE_PLAYING = 1
@@ -129,7 +133,26 @@ class SpaceMinerGame(displayio.Group):
         )
 
         self.append(self.health_progress_bar)
+        
+    # added by @PaulskPt
+    def get_current_state(self):
+        return self.CURRENT_STATE
+    
+    """
+    # added by @PaulskPt. 
+    # up_arrow_..., down_arrow_..., x_btn_...
+    # just to have registration of UP, DN and X btn activity
 
+    def up_arrow_btn_event(self):
+        pass
+
+    def down_arrow_btn_event(self):
+        pass
+
+    def x_btn_event(self):
+        pass
+    """
+    
     def left_arrow_btn_event(self):
         if self.CURRENT_STATE == SpaceMinerGame.STATE_PLAYING:
             self.ship.left_arrow_btn_event()
@@ -299,7 +322,7 @@ class SpaceMinerGame(displayio.Group):
                     for laser in self.lasers:
                         if laser.hidden == False:
                             if laser.y > 0:
-                                laser.y -= 1
+                                laser.y -= 3 # was: -= 1
                             else:
                                 laser.hidden = True
 
@@ -347,11 +370,6 @@ class SpaceMinerGame(displayio.Group):
 
                     if now > self.last_ore_spawn_time + (1.0 / self.ore_spawn_rate):
                         self.spawn_ore(self.ore_spawn_health)
-
-
-
-
-
             else:  # round end
                 self.update_round_end_info()
                 self.round_end_group.hidden = False
@@ -452,6 +470,10 @@ class Ship(displayio.Group):
     def a_btn_event(self):
         pass
 
+    # added by @PaulskPt for test to see if this event gets noticed in code.py
+    #def x_btn_event(self):
+    #    pass
+    
     @property
     def height(self):
         return self.ship_bitmap.height

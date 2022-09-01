@@ -7,9 +7,11 @@ The modifications have to do with:
 ```
 a) human readable REPL output for pressed buttons. Example "Pressed button X" instead of "Pressed button 5" and
    "Released button X" instead of "Released button 5".
-   For this, in file code.py, the defitions for keypad.Keys() "board.SW_X", "board.SW_UP" and "board.SW_DN" have been added to the keypad.Keys() tuples.
+   For this, in file code.py, the defitions for keypad.Keys() "board.SW_X", "board.SW_UP" and "board.SW_DN"
+   have been added to the keypad.Keys() tuples.
    Initially this list had only defined the buttons that were actually used: LEFT, RIGHT, A, B and Y.
-   Note that the 'new' buttons are added to the end of the list to leave the values for the buttons LEFT, RIGHT, A, B and Y unchanged.
+   Note that the 'new' buttons are added to the end of the list to leave the values for the buttons LEFT, 
+   RIGHT, A, B and Y unchanged.
 
    keys = keypad.Keys((
     board.SW_LEFT,
@@ -53,7 +55,7 @@ a) human readable REPL output for pressed buttons. Example "Pressed button X" in
             else:
                 if not game.get_current_state() == 2:  # STATE_GAME_OVER
                     #print("released", event) # original print command
-                    print("released button", btns_dict[k])
+                    print("released button", btns_dict[k]) # modified print command
                 # [...]  etcetera.
     
 b) increase the speed of the laser vertical (y) movement (30%). 

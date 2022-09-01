@@ -291,11 +291,11 @@ class SpaceMinerGame(displayio.Group):
         #self.show_score()
         
     def show_score(self):
-        self.score_shown = True
         #self.round_end_lbl.text = f"ore: {self.round_collected_ore}\nores_missed: {self.ores_missed}\nround score: {self.round_score}\nTotal score: {self.total_score}"
         t = f"ore: {self.round_collected_ore}\nores_missed: {self.ores_missed}\nround score: {self.round_score}\nTotal score: {self.total_score}"
         self.round_end_lbl.text = t
         print(t)
+        self.score_shown = True
 
     def reset_round(self):
         self.round_collected_ore = 0

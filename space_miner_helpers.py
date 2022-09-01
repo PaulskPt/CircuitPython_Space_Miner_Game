@@ -23,7 +23,7 @@ class SpaceMinerGame(displayio.Group):
     print("\nFRAME_DELAY = ", end='')
     n = int(FRAME_DELAY*1000000)+1 # +1 is correction because initial result was 499
     print(n, end='')
-    print(" uSeconds")
+    print(" microseconds")
 
     STATE_WAITING_TO_PLAY = 0
     STATE_PLAYING = 1

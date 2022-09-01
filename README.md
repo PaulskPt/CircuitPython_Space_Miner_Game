@@ -55,7 +55,7 @@ a) human readable REPL output for pressed buttons. Example "Pressed button X" in
             else:
                 if not game.get_current_state() == 2:  # STATE_GAME_OVER
                     #print("released", event) # original print command
-                    print("released button", btns_dict[k])
+                    print("released button", btns_dict[k]) # modified print command
                 # [...]  etcetera.
     
 b) increase the speed of the laser vertical (y) movement (30%). 

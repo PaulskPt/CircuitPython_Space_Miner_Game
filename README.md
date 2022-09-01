@@ -5,10 +5,10 @@ This fork contains various additions and modifictions by @PaulskPt
 
 The modifications have to do with:
 ```
-a) human readable REPL output for pressed buttons. Example "Pressed button X" instead of "Pressed button 5" and
-   "Released button X" instead of "Released button 5".
-   For this, in file code.py, the defitions for keypad.Keys() "board.SW_X", "board.SW_UP" and "board.SW_DN"
-   have been added to the keypad.Keys() tuples.
+a) human readable REPL output for pressed buttons. Example "Pressed button X" 
+   instead of "Pressed button 5" and "Released button X" instead of "Released button 5".
+   For this, in file code.py, the defitions for keypad.Keys() "board.SW_X", 
+   "board.SW_UP" and "board.SW_DN" have been added to the keypad.Keys().
    Initially this list had only defined the buttons that were actually used: LEFT, RIGHT, A, B and Y.
    Note that the 'new' buttons are added to the end of the list to leave the values for the buttons LEFT, 
    RIGHT, A, B and Y unchanged.

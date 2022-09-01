@@ -44,6 +44,7 @@ class SpaceMinerGame(displayio.Group):
         self.ores_missed = 0
         self.round_collected_ore = 0
         self.total_collected_ore = 0
+        self.score_shown = False
 
         self.health_progress_bar = None
 
@@ -171,6 +172,7 @@ class SpaceMinerGame(displayio.Group):
             self.reset_round()
             self.CURRENT_STATE = SpaceMinerGame.STATE_PLAYING
             self.start_round(1.0, 1)
+            self.score_shown = False
 
     def y_btn_event(self):
         if self.CURRENT_STATE != SpaceMinerGame.STATE_PLAYING:
@@ -285,7 +287,15 @@ class SpaceMinerGame(displayio.Group):
         self.round_score -= self.ores_missed
         self.total_score += self.round_score
         self.total_collected_ore += self.round_collected_ore
-        self.round_end_lbl.text = f"ore: {self.round_collected_ore}\nores_missed: {self.ores_missed}\nround score: {self.round_score}\nTotal score: {self.total_score}"
+        #self.round_end_lbl.text = f"ore: {self.round_collected_ore}\nores_missed: {self.ores_missed}\nround score: {self.round_score}\nTotal score: {self.total_score}"
+        #self.show_score()
+        
+    def show_score(self):
+        self.score_shown = True
+        #self.round_end_lbl.text = f"ore: {self.round_collected_ore}\nores_missed: {self.ores_missed}\nround score: {self.round_score}\nTotal score: {self.total_score}"
+        t = f"ore: {self.round_collected_ore}\nores_missed: {self.ores_missed}\nround score: {self.round_score}\nTotal score: {self.total_score}"
+        self.round_end_lbl.text = t
+        print(t)
 
     def reset_round(self):
         self.round_collected_ore = 0

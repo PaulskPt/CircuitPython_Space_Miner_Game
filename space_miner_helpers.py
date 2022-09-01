@@ -139,21 +139,6 @@ class SpaceMinerGame(displayio.Group):
     def get_current_state(self):
         return self.CURRENT_STATE
     
-    """
-    # added by @PaulskPt. 
-    # up_arrow_..., down_arrow_..., x_btn_...
-    # just to have registration of UP, DN and X btn activity
-
-    def up_arrow_btn_event(self):
-        pass
-
-    def down_arrow_btn_event(self):
-        pass
-
-    def x_btn_event(self):
-        pass
-    """
-    
     def left_arrow_btn_event(self):
         if self.CURRENT_STATE == SpaceMinerGame.STATE_PLAYING:
             self.ship.left_arrow_btn_event()

@@ -72,5 +72,13 @@ b) increase the speed of the laser vertical (y) movement (30%).
                     laser.y -= 3 # was: -= 1   <<<=== This increases the vertical speed of the laser with 30%.
                 else:
                     laser.hidden = True
-        
+
+c) In file space_miner_helpers.py, class SpaceMinerGame,
+   start of Class SpaceMinerGame, changed the REPL print of FRAME_DELAY to indicate the value in microseconds:
+    FRAME_DELAY = 0.001 / 2  # = 500 uSecs
+    # print(FRAME_DELAY) # original print command
+    print("\nFRAME_DELAY = ", end='') # modified print commands
+    n = int(FRAME_DELAY*1000000)+1 # +1 is correction because (incorrect) result was 499
+    print(n, end='')
+    print(" microeconds")
 ```

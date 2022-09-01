@@ -81,4 +81,12 @@ c) In file space_miner_helpers.py, class SpaceMinerGame,
     n = int(FRAME_DELAY*1000000)+1 # +1 is correction because (incorrect) result was 499
     print(n, end='')
     print(" microeconds")
+    
+d) It happened that the game score was only shown at the end of the first game. To have the score shown at every STATE_GAME_OVER,
+   in class SpaceMinderGame, was added the function show_score(). The part in function update_round_end_info(), to show the score
+   onto the display was moved to the function show_score(). Also was added a boolean attribute 'self.score_shown', to have the score
+   shown one time only. This flag is reset in the function 'b_btn_event()' which starts a game. The flag is set at the end of the show_score() function.
+   In code.py, at the end of the infinite while loop, if the current game state is STATE_GAME_OVER and the flag game.score_shown is False,
+   the function 'game.show_score()' will be called. The score will be shown on the display and the score will be printed in REPL.
+   
 ```

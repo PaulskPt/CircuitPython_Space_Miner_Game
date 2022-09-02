@@ -347,7 +347,6 @@ class SpaceMinerGame(displayio.Group):
             print(t)
             time.sleep(0.5)  # added by @PaulskPt to give display time to refresh
             self.round_end_lbl.text = t
-            #self.display.refresh()
             time.sleep(0.5)  # added by @PaulskPt to give display time to refresh
             self.score_shown = True
 
@@ -432,7 +431,7 @@ class SpaceMinerGame(displayio.Group):
                                 self.round_score -= 3
                                 self.ores_missed += 1
                                 if self.ship.health <= 0:
-                                    print("line: 438. We passed here") 
+                                    print("line: 434. We passed here") 
                                     self.CURRENT_STATE = SpaceMinerGame.STATE_GAME_OVER
                                     self.LAST_STATE = self.CURRENT_STATE # Remember state because we change it below
                                     self.round_end_group.hidden = False
@@ -444,7 +443,7 @@ class SpaceMinerGame(displayio.Group):
                     if now > self.last_ore_spawn_time + (1.0 / self.ore_spawn_rate):
                         self.spawn_ore(self.ore_spawn_health)
             else:  # round end
-                print("line: 450. We passed here")          
+                print("line: 446. We passed here")          
                 self.CURRENT_STATE = SpaceMinerGame.STATE_GAME_ROUND_END
                 self.LAST_STATE = self.CURRENT_STATE # Remember state because we change it below
                 self.round_end_group.hidden = False
@@ -453,7 +452,7 @@ class SpaceMinerGame(displayio.Group):
                 #print(self.round_end_lbl.text) # is now done in show_score()
                 self.CURRENT_STATE = SpaceMinerGame.STATE_WAITING_TO_PLAY
         elif self.CURRENT_STATE == SpaceMinerGame.STATE_GAME_OVER or self.CURRENT_STATE == SpaceMinerGame.STATE_GAME_ROUND_END: # added by @PaulskPt
-            print("line: 459. We passed here")
+            print("line: 455. We passed here")
             if not self.score_shown:
                 self.update_round_end_info()
             raise KeyboardInterrupt

@@ -66,7 +66,8 @@ a) human readable REPL output for pressed buttons. Example "Pressed button X"
                #print("released button", btns_dict[k]) # modified print command
             # [...]  etcetera.
     
-b) increase the speed of the laser vertical (y) movement (30%). 
+b) Set the default speed of the laser vertical (y) movement to 3 (an increase of 30% compared to the original value).
+   Added the possibility to change the laser speed (see f).
    This increases the chance to hit an ore.
    It is realized in file space_miner_helpers.py, class SpaceMinerGame, function tick():
 

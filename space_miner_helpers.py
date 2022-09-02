@@ -335,7 +335,7 @@ class SpaceMinerGame(displayio.Group):
         self.show_score()
         
     def show_score(self):
-        print("line 338: show_score(): self.score_shown=", self.score_shown)
+        print("line 338: show_score(): self.score_shown= {}\n\tself.round_end_group.hidden= {}".format(self.score_shown,self.round_end_group.hidden))
         if not self.score_shown:
             if self.CURRENT_STATE == SpaceMinerGame.STATE_GAME_OVER:
                 t0 = f"GAME OVER\n"
@@ -451,11 +451,6 @@ class SpaceMinerGame(displayio.Group):
                 #self.round_end_group.hidden = False
                 #print(self.round_end_lbl.text) # is now done in show_score()
                 self.CURRENT_STATE = SpaceMinerGame.STATE_WAITING_TO_PLAY
-        elif self.CURRENT_STATE == SpaceMinerGame.STATE_GAME_OVER or self.CURRENT_STATE == SpaceMinerGame.STATE_GAME_ROUND_END: # added by @PaulskPt
-            print("line: 455. We passed here")
-            if not self.score_shown:
-                self.update_round_end_info()
-            raise KeyboardInterrupt
 
 
 class Ore(displayio.Group):

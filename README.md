@@ -108,8 +108,9 @@ c) In file space_miner_helpers.py, class SpaceMinerGame,
     print(n, end='')
     print(" microeconds")
     
-d) It happened that the game score was only shown at the end of the first game. To have the score shown at every STATE_GAME_OVER and
-   STATE_GAME_ROUND_END, in class SpaceMinderGame, was added the function show_score(). The part in function update_round_end_info(),
+d) I experienced that the game score was only shown at a 'game over' or 'round end' during the first game. Despite the following mods this problem
+   continues to exist. To have the score shown at every STATE_GAME_OVER and STATE_GAME_ROUND_END, in class SpaceMinderGame, 
+   was added the function show_score(). The part in function update_round_end_info(),
    to show the score onto the display was moved to the function show_score(). Also was added a boolean attribute 'self.score_shown',
    to have the score shown one time only. 
    This flag is reset in the function 'b_btn_event()' which starts a game. The flag is set at the end of the show_score() function.

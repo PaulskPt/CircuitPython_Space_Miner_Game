@@ -335,7 +335,7 @@ class SpaceMinerGame(displayio.Group):
         self.show_score()
         
     def show_score(self):
-        print("line 341: show_score(): self.score_shown=", self.score_shown)
+        print("line 338: show_score(): self.score_shown=", self.score_shown)
         if not self.score_shown:
             if self.CURRENT_STATE == SpaceMinerGame.STATE_GAME_OVER:
                 t0 = f"GAME OVER\n"

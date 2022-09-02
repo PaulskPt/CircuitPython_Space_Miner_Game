@@ -29,6 +29,25 @@ class SpaceMinerGame(displayio.Group):
     STATE_PLAYING = 1
     STATE_GAME_OVER = 2
     STATE_SHOP = 3
+    STATE_GAME_ROUND_END = 4
+    LASER_MIN_SPEED = 1
+    LASER_MAX_SPEED = 5
+    
+    state_dict = {
+        0: "STATE_WAITING_TO_PLAY",
+        1: "STATE_PLAYING",
+        2: "STATE_GAME_OVER",
+        3: "STATE_SHOP",
+        4: "STATE_GAME_ROUND_END"
+    }
+    
+    state_dict2 = {
+        0: "WAITING TO PLAY",
+        1: "PLAYING",
+        2: "GAME_OVER",
+        3: "SHOP",
+        4: "ROUND END"
+    }
 
     def __init__(self, display_size, display):
         super().__init__()
@@ -44,11 +63,16 @@ class SpaceMinerGame(displayio.Group):
         self.ores_missed = 0
         self.round_collected_ore = 0
         self.total_collected_ore = 0
+        # Added by @PaulskPt
+        self.LAST_STATE = -1
         self.score_shown = False
+        self.state_shown = False
+        self.laser_speed = 3  # middle speed in range 1...5
 
         self.health_progress_bar = None
 
         self.stats = {
+            "laser_speed" : self.laser_speed,  # Added by @PaulskPt
             "laser_power": 1,
             "ship_health": 100
         }
@@ -73,7 +97,7 @@ class SpaceMinerGame(displayio.Group):
                                           x=0, y=0)
         self.shop_group.append(self.shop_bg)
 
-        self.shop_items = ["Laser Power", "Ship Health"]
+        self.shop_items = ["Laser Speed", "Laser Power", "Ship Health"]
         self.shop_list_select = ListSelect(
             scale=2,
             items=self.shop_items
@@ -81,7 +105,7 @@ class SpaceMinerGame(displayio.Group):
         self.shop_group.append(self.shop_list_select)
         self.shop_group.hidden = True
         self.shop_list_select.anchor_point = (0.5, 0.5)
-        self.shop_list_select.anchored_position = (self.display_size[0] // 2, self.display_size[1] // 2)
+        self.shop_list_select.anchored_position = (self.display_size[0] // 2, self.display_size[1] // 2 + 20)
 
         self.shop_lbl = Label(terminalio.FONT, scale=2, text="", anchor_point=(0.5, 0.0),
                               anchored_position=(self.display_size[0] // 2, 10))
@@ -117,6 +141,8 @@ class SpaceMinerGame(displayio.Group):
 
         self.left_btn_is_down = False
         self.right_btn_is_down = False
+        self.up_btn_is_down = False
+        self.down_btn_is_down = False
 
     def setup_health_progress_bar(self):
         if self.health_progress_bar is not None:
@@ -150,17 +176,42 @@ class SpaceMinerGame(displayio.Group):
             self.ship.right_arrow_btn_event()
         if self.CURRENT_STATE == SpaceMinerGame.STATE_SHOP:
             self.shop_list_select.move_selection_down()
+            
+    def up_arrow_btn_event(self):
+        if self.CURRENT_STATE == SpaceMinerGame.STATE_SHOP or self.LAST_STATE == SpaceMinerGame.STATE_SHOP:
+            print("SHOP: pressed button UP")
+            if self.shop_list_select.selected_item == "Laser Speed":
+                self.laser_speed += 1
+                if self.laser_speed > SpaceMinerGame.LASER_MAX_SPEED:
+                    self.laser_speed = SpaceMinerGame.LASER_MAX_SPEED
+                self.stats["laser_speed"] = self.laser_speed
+                self.update_shop_label()
+    
+    def down_arrow_btn_event(self):
+        if self.CURRENT_STATE == SpaceMinerGame.STATE_SHOP or self.LAST_STATE == SpaceMinerGame.STATE_SHOP:
+            print("SHOP: pressed button DOWN")
+            if self.shop_list_select.selected_item == "Laser Speed":
+                self.laser_speed -= 1
+                if self.laser_speed < SpaceMinerGame.LASER_MIN_SPEED:
+                    self.laser_speed = SpaceMinerGame.LASER_MIN_SPEED
+                self.stats["laser_speed"] = self.laser_speed
+                self.update_shop_label()
 
     def b_btn_event(self):
         if self.CURRENT_STATE != SpaceMinerGame.STATE_PLAYING:
             self.round_end_group.hidden = True
             self.reset_round()
             self.CURRENT_STATE = SpaceMinerGame.STATE_PLAYING
+            self.LAST_STATE = self.CURRENT_STATE # Update
             self.start_round(1.0, 1)
-            self.score_shown = False
+        self.score_shown = False
+        self.state_shown = False
 
     def y_btn_event(self):
         if self.CURRENT_STATE != SpaceMinerGame.STATE_PLAYING:
+            if self.CURRENT_STATE == SpaceMinerGame.STATE_SHOP:
+                self.display.refresh()
+
             if not self.round_end_group.hidden:
                 self.round_end_group.hidden = True
                 self.show_shop()
@@ -180,7 +231,12 @@ class SpaceMinerGame(displayio.Group):
 
         if self.CURRENT_STATE == SpaceMinerGame.STATE_SHOP:
             print("click buy ")
-            if self.shop_list_select.selected_item == "Laser Power":
+            if self.shop_list_select.selected_item == "Laser Speed":
+                if self.up_btn_is_down:
+                    self.up_arrow_btn_event()
+                elif self.down_btn_is_down:
+                    self.down_arrow_btn_event()
+            elif self.shop_list_select.selected_item == "Laser Power":
                 if self.total_collected_ore >= 10:
                     self.total_collected_ore -= 10
                     self.stats["laser_power"] += 1
@@ -192,7 +248,8 @@ class SpaceMinerGame(displayio.Group):
                     self.update_shop_label()
 
     def update_shop_label(self):
-        self.shop_lbl.text = f"ORE: {self.total_collected_ore}\nLP: {self.stats['laser_power']} | HP: {self.stats['ship_health']}"
+        #self.shop_lbl.text = f"ORE: {self.total_collected_ore}\nLP: {self.stats['laser_power']} | HP: {self.stats['ship_health']}"
+        self.shop_lbl.text = f"ORE: {self.total_collected_ore}\nLS: {self.stats['laser_speed']}\nLP: {self.stats['laser_power']} | HP: {self.stats['ship_health']}"
 
     def show_shop(self):
         self.shop_group.hidden = False
@@ -241,6 +298,7 @@ class SpaceMinerGame(displayio.Group):
         self.round_start_time = time.monotonic()
         self.ore_spawn_rate = ore_spawn_rate
         self.ore_spawn_health = ore_health
+        self.score_shown = False
 
     @property
     def first_available_ore(self):
@@ -252,7 +310,7 @@ class SpaceMinerGame(displayio.Group):
 
     def spawn_ore(self, ore_health):
 
-        print(f"len: {len(self.ores)}")
+        # print(f"len: {len(self.ores)}")
         self.last_ore_spawn_time = time.monotonic()
 
         _new_ore = self.first_available_ore
@@ -273,14 +331,24 @@ class SpaceMinerGame(displayio.Group):
         self.total_score += self.round_score
         self.total_collected_ore += self.round_collected_ore
         #self.round_end_lbl.text = f"ore: {self.round_collected_ore}\nores_missed: {self.ores_missed}\nround score: {self.round_score}\nTotal score: {self.total_score}"
-        #self.show_score()
+        self.score_shown = False
+        self.show_score()
         
     def show_score(self):
-        #self.round_end_lbl.text = f"ore: {self.round_collected_ore}\nores_missed: {self.ores_missed}\nround score: {self.round_score}\nTotal score: {self.total_score}"
-        t = f"ore: {self.round_collected_ore}\nores_missed: {self.ores_missed}\nround score: {self.round_score}\nTotal score: {self.total_score}"
-        self.round_end_lbl.text = t
-        print(t)
-        self.score_shown = True
+        if not self.score_shown:
+            if self.CURRENT_STATE == SpaceMinerGame.STATE_GAME_OVER:
+                t0 = f"GAME OVER\n"
+            elif self.CURRENT_STATE == SpaceMinerGame.STATE_GAME_ROUND_END:
+                t0 = f"ROUND END\n"
+            else:
+                t0 = f"STATE "+self.state_dict2[self.CURRENT_STATE]+"\n"
+            t = t0 + f"ore: {self.round_collected_ore}\nores_missed: {self.ores_missed}\nround score: {self.round_score}\nTotal score: {self.total_score}"
+            print(t)
+            time.sleep(0.5)  # added by @PaulskPt to give display time to refresh
+            self.round_end_lbl.text = t
+            #self.display.refresh()
+            time.sleep(0.5)  # added by @PaulskPt to give display time to refresh
+            self.score_shown = True
 
     def reset_round(self):
         self.round_collected_ore = 0
@@ -299,7 +367,15 @@ class SpaceMinerGame(displayio.Group):
     def tick(self):
 
         now = time.monotonic()
-        if self.CURRENT_STATE == SpaceMinerGame.STATE_PLAYING:
+        if not self.state_shown:
+            print("self.CURRENT_STATE=", SpaceMinerGame.state_dict[self.CURRENT_STATE])
+            self.state_shown = True
+        if self.CURRENT_STATE == SpaceMinerGame.STATE_SHOP:
+            if self.up_btn_is_down:
+                self.up_arrow_btn_event()                    
+            if self.down_btn_is_down:
+                self.down_arrow_btn_event()
+        elif self.CURRENT_STATE == SpaceMinerGame.STATE_PLAYING:
 
             if now <= self.round_start_time + SpaceMinerGame.ROUND_TIME:
 
@@ -317,7 +393,7 @@ class SpaceMinerGame(displayio.Group):
                     for laser in self.lasers:
                         if laser.hidden == False:
                             if laser.y > 0:
-                                laser.y -= 3 # was: -= 1
+                                laser.y -= self.laser_speed # was: -= 1
                             else:
                                 laser.hidden = True
 
@@ -340,7 +416,7 @@ class SpaceMinerGame(displayio.Group):
 
                                         ore.health -= self.stats["laser_power"]
                                         if ore.health <= 0:
-                                            print(f'captured ore {ore.y} - {laser.y} ')
+                                            # print(f'captured ore {ore.y} - {laser.y} ')
                                             self.round_score += 3
 
                                         laser.hidden = True
@@ -356,20 +432,22 @@ class SpaceMinerGame(displayio.Group):
                                 self.ores_missed += 1
                                 if self.ship.health <= 0:
                                     self.CURRENT_STATE = SpaceMinerGame.STATE_GAME_OVER
-                                    self.update_round_end_info()
+                                    self.LAST_STATE = self.CURRENT_STATE # Remember state because we change it below
                                     self.round_end_group.hidden = False
-                                    print("Game Over")
-
+                                    self.update_round_end_info()
+                                    #self.round_end_group.hidden = False
                                 ore.hidden = True
                                 ore.y = 0
 
                     if now > self.last_ore_spawn_time + (1.0 / self.ore_spawn_rate):
                         self.spawn_ore(self.ore_spawn_health)
             else:  # round end
-                self.update_round_end_info()
+                self.CURRENT_STATE = SpaceMinerGame.STATE_GAME_ROUND_END
+                self.LAST_STATE = self.CURRENT_STATE # Remember state because we change it below
                 self.round_end_group.hidden = False
-                print(self.round_end_lbl.text)
-
+                self.update_round_end_info()
+                #self.round_end_group.hidden = False
+                #print(self.round_end_lbl.text) # is now done in show_score()
                 self.CURRENT_STATE = SpaceMinerGame.STATE_WAITING_TO_PLAY
 
 
@@ -441,6 +519,8 @@ class Ship(displayio.Group):
         self.health = Ship.STARTING_HEALTH
 
         self.display_size = display_size
+        # added by @PaulskPt
+        self.x = self.display_size[0] // 2 - 18
 
         # Setup the file as the bitmap data source
         #self.ship_bitmap = displayio.OnDiskBitmap("ship.bmp")

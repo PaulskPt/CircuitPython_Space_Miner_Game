@@ -35,6 +35,7 @@ game = SpaceMinerGame((display.width, display.height), display)
 #print("dir(game)=", dir(game))
 # Add the TileGrid to the Group
 
+STATE_GAME_ROUND_END = game.STATE_GAME_ROUND_END
 STATE_GAME_OVER = game.STATE_GAME_OVER
 
 main_group.append(game)
@@ -45,28 +46,32 @@ display.show(main_group)
 left_btn_is_down = False
 right_btn_is_down = False
 
-
-
 # Loop forever so you can enjoy your image
 while True:
-    gcs = game.get_current_state()
+    #gcs = game.get_current_state()
+    #gls = game.LAST_STATE
     event = keys.events.get()
     # event will be None if nothing has happened.
     if event:
-        #print("type(event)={}, event={}".format(type(event), event))
+        """
+        print("game.score_shown=", game.score_shown)
+        print("gcs=", game.state_dict[gcs])
+        if gls in game.state_dict.keys():
+            print("gls=", game.state_dict[gls])
+        """
         k = event.key_number
         if event.pressed:
-            if not gcs == STATE_GAME_OVER:
-                #print("pressed", event) # original print command
-                print("pressed button", btns_dict[k]) # modified print command
+            #print("pressed button", btns_dict[k]) # modified print command
             if k == 0:  # LT arrow button
                 game.left_btn_is_down = True
             elif k == 1:  # RT arrow button
                 game.right_btn_is_down = True
+            elif k == 6:  # UP arrow button
+                game.up_btn_is_down = True
+            elif k == 7:
+                game.down_btn_is_down = True
         else:
-            if not gcs == STATE_GAME_OVER:
-                #print("released", event) # original print command
-                print("released button", btns_dict[k]) # modified print command
+            #print("released button", btns_dict[k]) # modified print command
             if k == 0:  # LT arrow button
                 game.left_btn_is_down = False
                 game.left_arrow_btn_event()
@@ -79,19 +84,9 @@ while True:
                 game.b_btn_event()
             elif k == 4:  # Y button
                 game.y_btn_event()
-            """
-            elif k == 5:  # X button
-                pass
-                # game.x_btn_event()
             elif k == 6:  # UP arrow button
-                pass
-                # game.up_arrow_btn_event()
-            elif k == 7:  # DN arrow button
-                pass
-                # game.down_arrow_btn_event()
-            """
-    if  gcs == STATE_GAME_OVER:
-        if not game.score_shown:
-            game.show_score()
+                game.up_btn_is_down = False
+            elif k == 7: # DN arrow button
+                game.down_btn_is_down = False
     game.tick()
 

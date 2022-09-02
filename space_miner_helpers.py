@@ -209,9 +209,6 @@ class SpaceMinerGame(displayio.Group):
 
     def y_btn_event(self):
         if self.CURRENT_STATE != SpaceMinerGame.STATE_PLAYING:
-            if self.CURRENT_STATE == SpaceMinerGame.STATE_SHOP:
-                self.display.refresh()
-
             if not self.round_end_group.hidden:
                 self.round_end_group.hidden = True
                 self.show_shop()

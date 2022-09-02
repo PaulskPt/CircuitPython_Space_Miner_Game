@@ -179,7 +179,7 @@ class SpaceMinerGame(displayio.Group):
             
     def up_arrow_btn_event(self):
         if self.CURRENT_STATE == SpaceMinerGame.STATE_SHOP or self.LAST_STATE == SpaceMinerGame.STATE_SHOP:
-            print("SHOP: pressed button UP")
+            # print("SHOP: pressed button UP")
             if self.shop_list_select.selected_item == "Laser Speed":
                 self.laser_speed += 1
                 if self.laser_speed > SpaceMinerGame.LASER_MAX_SPEED:
@@ -189,7 +189,7 @@ class SpaceMinerGame(displayio.Group):
     
     def down_arrow_btn_event(self):
         if self.CURRENT_STATE == SpaceMinerGame.STATE_SHOP or self.LAST_STATE == SpaceMinerGame.STATE_SHOP:
-            print("SHOP: pressed button DOWN")
+            # print("SHOP: pressed button DOWN")
             if self.shop_list_select.selected_item == "Laser Speed":
                 self.laser_speed -= 1
                 if self.laser_speed < SpaceMinerGame.LASER_MIN_SPEED:
@@ -331,10 +331,14 @@ class SpaceMinerGame(displayio.Group):
         self.total_score += self.round_score
         self.total_collected_ore += self.round_collected_ore
         #self.round_end_lbl.text = f"ore: {self.round_collected_ore}\nores_missed: {self.ores_missed}\nround score: {self.round_score}\nTotal score: {self.total_score}"
+        if not self.state_shown:
+            print("update_round_end_info(): self.CURRENT_STATE=", SpaceMinerGame.state_dict[self.CURRENT_STATE])
+            self.state_shown = True
         self.score_shown = False
         self.show_score()
         
     def show_score(self):
+        print("line 341: show_score(): self.score_shown=", self.score_shown)
         if not self.score_shown:
             if self.CURRENT_STATE == SpaceMinerGame.STATE_GAME_OVER:
                 t0 = f"GAME OVER\n"
@@ -365,11 +369,11 @@ class SpaceMinerGame(displayio.Group):
         self.round_end_lbl.text = ""
 
     def tick(self):
-
+        
         now = time.monotonic()
-        if not self.state_shown:
-            print("self.CURRENT_STATE=", SpaceMinerGame.state_dict[self.CURRENT_STATE])
-            self.state_shown = True
+        #if not self.state_shown:
+        #    print("SpaceMinerGame.tick(): self.CURRENT_STATE=", SpaceMinerGame.state_dict[self.CURRENT_STATE])
+        #    self.state_shown = True
         if self.CURRENT_STATE == SpaceMinerGame.STATE_SHOP:
             if self.up_btn_is_down:
                 self.up_arrow_btn_event()                    
@@ -431,6 +435,7 @@ class SpaceMinerGame(displayio.Group):
                                 self.round_score -= 3
                                 self.ores_missed += 1
                                 if self.ship.health <= 0:
+                                    print("line: 438. We passed here") 
                                     self.CURRENT_STATE = SpaceMinerGame.STATE_GAME_OVER
                                     self.LAST_STATE = self.CURRENT_STATE # Remember state because we change it below
                                     self.round_end_group.hidden = False
@@ -442,6 +447,7 @@ class SpaceMinerGame(displayio.Group):
                     if now > self.last_ore_spawn_time + (1.0 / self.ore_spawn_rate):
                         self.spawn_ore(self.ore_spawn_health)
             else:  # round end
+                print("line: 450. We passed here")          
                 self.CURRENT_STATE = SpaceMinerGame.STATE_GAME_ROUND_END
                 self.LAST_STATE = self.CURRENT_STATE # Remember state because we change it below
                 self.round_end_group.hidden = False
@@ -449,6 +455,11 @@ class SpaceMinerGame(displayio.Group):
                 #self.round_end_group.hidden = False
                 #print(self.round_end_lbl.text) # is now done in show_score()
                 self.CURRENT_STATE = SpaceMinerGame.STATE_WAITING_TO_PLAY
+        elif self.CURRENT_STATE == SpaceMinerGame.STATE_GAME_OVER or self.CURRENT_STATE == SpaceMinerGame.STATE_GAME_ROUND_END: # added by @PaulskPt
+            print("line: 459. We passed here")
+            if not self.score_shown:
+                self.update_round_end_info()
+            raise KeyboardInterrupt
 
 
 class Ore(displayio.Group):

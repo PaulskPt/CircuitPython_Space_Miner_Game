@@ -40,23 +40,31 @@ a) human readable REPL output for pressed buttons. Example "Pressed button X"
     In code.py, in the infinite while loop the following changes have been made to facilitate the print readability:
     # Loop forever so you can enjoy your image
     while True:
-        event = keys.events.get()
-        # event will be None if nothing has happened.
-        if event:
-            k = event.key_number # create key to btns_dict.
-            if event.pressed:
-                if not game.get_current_state() == 2:  # STATE_GAME_OVER
-                    #print("pressed", event) # original print command
-                    print("pressed button", btns_dict[k]) # modified print command
-                if k == 0:  # LT arrow button
-                    game.left_btn_is_down = True
-                elif k == 1:  # RT arrow button
-                    game.right_btn_is_down = True
-            else:
-                if not game.get_current_state() == 2:  # STATE_GAME_OVER
-                    #print("released", event) # original print command
-                    print("released button", btns_dict[k]) # modified print command
-                # [...]  etcetera.
+       #gcs = game.get_current_state()
+       #gls = game.LAST_STATE
+       event = keys.events.get()
+       # event will be None if nothing has happened.
+       if event:
+           """
+           print("game.score_shown=", game.score_shown)
+           print("gcs=", game.state_dict[gcs])
+           if gls in game.state_dict.keys():
+               print("gls=", game.state_dict[gls])
+           """
+           k = event.key_number
+           if event.pressed:
+               #print("pressed button", btns_dict[k]) # modified print command
+               if k == 0:  # LT arrow button
+                   game.left_btn_is_down = True
+               elif k == 1:  # RT arrow button
+                   game.right_btn_is_down = True
+               elif k == 6:  # UP arrow button
+                   game.up_btn_is_down = True
+               elif k == 7:
+                   game.down_btn_is_down = True
+           else:
+               #print("released button", btns_dict[k]) # modified print command
+            # [...]  etcetera.
     
 b) increase the speed of the laser vertical (y) movement (30%). 
    This increases the chance to hit an ore.
@@ -74,7 +82,24 @@ b) increase the speed of the laser vertical (y) movement (30%).
                     laser.hidden = True
 
 c) In file space_miner_helpers.py, class SpaceMinerGame,
-   start of Class SpaceMinerGame, changed the REPL print of FRAME_DELAY to indicate the value in microseconds:
+   Added:
+       state_dict = {
+        0: "STATE_WAITING_TO_PLAY",
+        1: "STATE_PLAYING",
+        2: "STATE_GAME_OVER",
+        3: "STATE_SHOP",
+        4: "STATE_GAME_ROUND_END"
+    }
+    
+    state_dict2 = {
+        0: "WAITING TO PLAY",
+        1: "PLAYING",
+        2: "GAME_OVER",
+        3: "SHOP",
+        4: "ROUND END"
+    }
+    
+    At the start of Class SpaceMinerGame, changed the REPL print of FRAME_DELAY to indicate the value in microseconds:
     FRAME_DELAY = 0.001 / 2  # = 500 uSecs
     # print(FRAME_DELAY) # original print command
     print("\nFRAME_DELAY = ", end='') # modified print commands
@@ -82,11 +107,19 @@ c) In file space_miner_helpers.py, class SpaceMinerGame,
     print(n, end='')
     print(" microeconds")
     
-d) It happened that the game score was only shown at the end of the first game. To have the score shown at every STATE_GAME_OVER,
-   in class SpaceMinderGame, was added the function show_score(). The part in function update_round_end_info(), to show the score
-   onto the display was moved to the function show_score(). Also was added a boolean attribute 'self.score_shown', to have the score
-   shown one time only. This flag is reset in the function 'b_btn_event()' which starts a game. The flag is set at the end of the show_score() function.
+d) It happened that the game score was only shown at the end of the first game. To have the score shown at every STATE_GAME_OVER and
+   STATE_GAME_ROUND_END, in class SpaceMinderGame, was added the function show_score(). The part in function update_round_end_info(),
+   to show the score onto the display was moved to the function show_score(). Also was added a boolean attribute 'self.score_shown',
+   to have the score shown one time only. 
+   This flag is reset in the function 'b_btn_event()' which starts a game. The flag is set at the end of the show_score() function.
    In code.py, at the end of the infinite while loop, if the current game state is STATE_GAME_OVER and the flag game.score_shown is False,
    the function 'game.show_score()' will be called. The score will be shown on the display and the score will be printed in REPL.
+ 
+e) in file space_miner_helpers.py, class Ship
+   set the initial self.x value to 'self.x = self.display_size[0] // 2 - 18' to show the ship in the middle instead of the extreme left.
+ 
+f) in the STATE_SHOP, class SpaceMinerGame, added defines: LASER_MIN_SPEED = 1 and  LASER_MAX_SPEED = 5
+   Added item "Laser Speed" to self.stats. In function update_shop_label(), added "Laser Speed".
+   Using the functions: up_arrow_btn_event() and down_arrow_btn_event() to increase and decrease the value for 'self.laser_speed'.
    
 ```

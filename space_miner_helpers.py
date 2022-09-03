@@ -454,7 +454,7 @@ class SpaceMinerGame(displayio.Group):
                     if now > self.last_ore_spawn_time + (1.0 / self.ore_spawn_rate):
                         self.spawn_ore(self.ore_spawn_health)
             else:  # round end
-                print("line: 456. We passed here")          
+                print("line: 457. We passed here")          
                 self.CURRENT_STATE = SpaceMinerGame.STATE_GAME_ROUND_END
                 self.nr_of_rounds += 1  # added by @PaulskPt
                 self.LAST_STATE = self.CURRENT_STATE # Remember state because we change it below

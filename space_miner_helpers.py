@@ -254,7 +254,6 @@ class SpaceMinerGame(displayio.Group):
                     self.update_shop_label()
 
     def update_shop_label(self):
-        #self.shop_lbl.text = f"ORE: {self.total_collected_ore}\nLP: {self.stats['laser_power']} | HP: {self.stats['ship_health']}"
         self.shop_lbl.text = f"ORE: {self.total_collected_ore}\nLS: {self.stats['laser_speed']}\nLP: {self.stats['laser_power']} | HP: {self.stats['ship_health']}"
 
     def show_shop(self):

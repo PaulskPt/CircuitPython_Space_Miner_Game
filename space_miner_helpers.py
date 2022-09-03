@@ -353,7 +353,7 @@ class SpaceMinerGame(displayio.Group):
             t0 = f"GAME OVER\n"
         else:
             t0 = f"STATE "+self.state_dict2[self.CURRENT_STATE]+"\n"
-        t1 = "ores down:   {:>2d}\nores missed: {:>2d}\nround score: {:>2d}\nTotal score: {:>2d}".format(self.round_collected_ore, self.ores_missed, self.round_score, self.total_score)
+        t1 = "ores down:   {:>3d}\nores missed: {:>3d}\nround score: {:>3d}\nTotal score: {:>3d}".format(self.round_collected_ore, self.ores_missed, self.round_score, self.total_score)
             
         #t = t0 + f"ores down:    {self.round_collected_ore}\nores_missed: {self.ores_missed}\nround score: {self.round_score}\nTotal score: {self.total_score}"
         t = t0 + t1
@@ -372,7 +372,7 @@ class SpaceMinerGame(displayio.Group):
         # only after a GAME OVER state
         print("reset_round(): self.LAST_STATE=", self.state_dict2[self.LAST_STATE])
         if self.LAST_STATE == SpaceMinerGame.STATE_GAME_OVER:
-            self.ship.health = self.stats["ship_health"] # Note @PaulsPt: don't reset the ships progress bar between rounds
+            self.ship.health = self.stats["ship_health"]
             self.setup_health_progress_bar()
 
         for ore in self.ores:

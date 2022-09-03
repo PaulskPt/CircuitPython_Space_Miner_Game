@@ -106,7 +106,7 @@ c) In file space_miner_helpers.py, class SpaceMinerGame,
 d) I experienced that the game score was only shown at a 'game over' or 'round end' during the first round. In subsequent rounds
    the game score was only shown in REPL, not on the display. 
    During @☺Foamyguys stream on Twitch.tv on Saturday September 3, 2022, it revealed that, while the Pimoroni PICO SYSTEM device,
-   that I was using, was flashed with CircuitPython firmware version: CircuitPython v.8.0.0-beta0, however the .mpy files in
+   that I was using, was flashed with CircuitPython firmware version: CircuitPython v.8.0.0-beta0, the .mpy files in
    /lib/Adafruit_display_text were a bit outdated (March 28, 2022). After I replaced these files by ones with a date of 
    August 26, 2022, the problem of not displaying the game score in rounds >= 2, was solved.
 

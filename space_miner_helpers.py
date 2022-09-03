@@ -363,8 +363,8 @@ class SpaceMinerGame(displayio.Group):
         self.round_collected_ore = 0
         self.ores_missed = 0
         self.round_score = 0
-        self.ship.health = self.stats["ship_health"]
-        self.setup_health_progress_bar()
+        #self.ship.health = self.stats["ship_health"] # Note @PaulsPt: don't reset the ships progress bar between rounds
+        #self.setup_health_progress_bar()
 
         for ore in self.ores:
             ore.hidden = True
@@ -436,6 +436,8 @@ class SpaceMinerGame(displayio.Group):
                             # check collision between ore and ship
                             if self.ship_collision(ore):
                                 self.ship.health -= 25
+                                if self.ship.health < 0:  # added by @PaulskPt
+                                    self.ship.health = 0  # Value must be between 0 and 100
                                 self.health_progress_bar.value = self.ship.health
                                 self.round_score -= 3
                                 self.ores_missed += 1
@@ -446,6 +448,7 @@ class SpaceMinerGame(displayio.Group):
                                     self.nr_of_rounds += 1  # added by @PaulskPt
                                     self.round_end_group.hidden = False
                                     self.update_round_end_info()
+                                    self.nr_of_rounds = 0  # reset
                                     #self.round_end_group.hidden = False
 
                                 ore.hidden = True

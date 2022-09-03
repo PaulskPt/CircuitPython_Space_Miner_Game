@@ -60,8 +60,6 @@ while True:
                     game.up_btn_is_down = True
                 elif k == 7:
                     game.down_btn_is_down = True
-                else:
-                    no_button = True
             else:
                 #print("released button", btns_dict[k]) # modified print command
                 if k == 0:  # LT arrow button
@@ -82,8 +80,6 @@ while True:
                     game.up_btn_is_down = False
                 elif k == 7: # DN arrow button -  - in SHOP decrease laser speed
                     game.down_btn_is_down = False
-                else:
-                    no_button = True
         game.tick()
     except KeyboardInterrupt:
         break

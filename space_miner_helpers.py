@@ -64,7 +64,7 @@ class SpaceMinerGame(displayio.Group):
         self.round_collected_ore = 0
         self.total_collected_ore = 0
         # Added by @PaulskPt
-        self.LAST_STATE = -1
+        self.LAST_STATE = self.CURRENT_STATE
         self.score_shown = False
         self.state_shown = False
         self.laser_speed = 3  # middle speed in range 1...5
@@ -219,6 +219,7 @@ class SpaceMinerGame(displayio.Group):
                 self.round_end_group.hidden = False
                 self.shop_group.hidden = True
                 self.CURRENT_STATE = SpaceMinerGame.STATE_WAITING_TO_PLAY
+                self.LAST_STATE = self.CURRENT_STATE # Update
 
     def a_btn_event(self):
         if self.CURRENT_STATE == SpaceMinerGame.STATE_PLAYING:
@@ -254,6 +255,7 @@ class SpaceMinerGame(displayio.Group):
     def show_shop(self):
         self.shop_group.hidden = False
         self.CURRENT_STATE = SpaceMinerGame.STATE_SHOP
+        self.LAST_STATE = self.CURRENT_STATE # Update
         self.update_shop_label()
 
     @property
@@ -363,8 +365,12 @@ class SpaceMinerGame(displayio.Group):
         self.round_collected_ore = 0
         self.ores_missed = 0
         self.round_score = 0
-        #self.ship.health = self.stats["ship_health"] # Note @PaulsPt: don't reset the ships progress bar between rounds
-        #self.setup_health_progress_bar()
+        # Note @PaulsPt: don't reset the ships progress bar between rounds
+        # only after a GAME OVER state
+        print("reset_round(): self.LAST_STATE=", self.state_dict2[self.LAST_STATE])
+        if self.LAST_STATE == SpaceMinerGame.STATE_GAME_OVER:
+            self.ship.health = self.stats["ship_health"] # Note @PaulsPt: don't reset the ships progress bar between rounds
+            self.setup_health_progress_bar()
 
         for ore in self.ores:
             ore.hidden = True
@@ -442,7 +448,7 @@ class SpaceMinerGame(displayio.Group):
                                 self.round_score -= 3
                                 self.ores_missed += 1
                                 if self.ship.health <= 0:
-                                    print("line: 445. We passed here") 
+                                    print("line: 451. We passed here") 
                                     self.CURRENT_STATE = SpaceMinerGame.STATE_GAME_OVER
                                     self.LAST_STATE = self.CURRENT_STATE # Remember state because we change it below
                                     self.nr_of_rounds += 1  # added by @PaulskPt
@@ -457,8 +463,9 @@ class SpaceMinerGame(displayio.Group):
                     if now > self.last_ore_spawn_time + (1.0 / self.ore_spawn_rate):
                         self.spawn_ore(self.ore_spawn_health)
             else:  # round end
-                print("line: 460. We passed here")          
+                print("line: 466. We passed here")          
                 self.CURRENT_STATE = SpaceMinerGame.STATE_GAME_ROUND_END
+                self.LAST_STATE = self.CURRENT_STATE # Update
                 self.nr_of_rounds += 1  # added by @PaulskPt
                 self.LAST_STATE = self.CURRENT_STATE # Remember state because we change it below
                 self.round_end_group.hidden = False
@@ -467,6 +474,7 @@ class SpaceMinerGame(displayio.Group):
                 #self.round_end_group.hidden = False
                 #print(self.round_end_lbl.text) # is now done in show_score()
                 self.CURRENT_STATE = SpaceMinerGame.STATE_WAITING_TO_PLAY
+                self.LAST_STATE = self.CURRENT_STATE # Update
 
 
 class Ore(displayio.Group):

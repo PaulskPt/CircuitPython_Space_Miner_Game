@@ -68,6 +68,7 @@ class SpaceMinerGame(displayio.Group):
         self.score_shown = False
         self.state_shown = False
         self.laser_speed = 3  # middle speed in range 1...5
+        self.nr_of_rounds = 0
 
         self.health_progress_bar = None
 
@@ -351,10 +352,9 @@ class SpaceMinerGame(displayio.Group):
         else:
             t0 = f"STATE "+self.state_dict2[self.CURRENT_STATE]+"\n"
         t = t0 + f"ore: {self.round_collected_ore}\nores_missed: {self.ores_missed}\nround score: {self.round_score}\nTotal score: {self.total_score}"
-        self.round_end_lbl.text = ""
-        time.sleep(0.2)
         self.round_end_lbl.text = t
         time.sleep(0.5)  # added by @PaulskPt to give display time to refresh
+        print("Round nr:", self.nr_of_rounds)
         print(t)
         #time.sleep(0.5)  # added by @PaulskPt to give display time to refresh
         self.score_shown = True
@@ -443,6 +443,7 @@ class SpaceMinerGame(displayio.Group):
                                     print("line: 443. We passed here") 
                                     self.CURRENT_STATE = SpaceMinerGame.STATE_GAME_OVER
                                     self.LAST_STATE = self.CURRENT_STATE # Remember state because we change it below
+                                    self.nr_of_rounds += 1  # added by @PaulskPt
                                     self.round_end_group.hidden = False
                                     self.update_round_end_info()
                                     #self.round_end_group.hidden = False
@@ -455,6 +456,7 @@ class SpaceMinerGame(displayio.Group):
             else:  # round end
                 print("line: 456. We passed here")          
                 self.CURRENT_STATE = SpaceMinerGame.STATE_GAME_ROUND_END
+                self.nr_of_rounds += 1  # added by @PaulskPt
                 self.LAST_STATE = self.CURRENT_STATE # Remember state because we change it below
                 self.round_end_group.hidden = False
                 self.update_round_end_info()

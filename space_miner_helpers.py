@@ -70,8 +70,11 @@ class SpaceMinerGame(displayio.Group):
         self.state_shown = False
         self.laser_speed = 3  # middle speed in range 1...5
         self.nr_of_rounds = 0
+        self.round_time_left = SpaceMinerGame.ROUND_TIME
+        self.round_time_left_old = 0
 
         self.health_progress_bar = None
+        self.round_progress_bar = None
 
         self.stats = {
             "laser_speed" : self.laser_speed,  # Added by @PaulskPt
@@ -116,6 +119,7 @@ class SpaceMinerGame(displayio.Group):
         self.append(self.shop_group)
 
         self.setup_health_progress_bar()
+        self.setup_round_progress_bar()
 
         self.ship = Ship(display_size)
         self.ship.y = display_size[1] - self.ship.height
@@ -163,6 +167,36 @@ class SpaceMinerGame(displayio.Group):
         )
 
         self.append(self.health_progress_bar)
+        
+ 
+    def setup_round_progress_bar(self):
+        TAG = "setup_round_progress_bar(): "
+        if self.round_progress_bar is not None:
+            self.remove(self.round_progress_bar)
+            self.round_progress_bar = None
+            gc.collect()
+            
+        ROUND_PROGRESS_WIDTH = 80
+        ROUND_PROGRESS_HEIGHT = 8
+
+        self.round_progress_bar = HorizontalProgressBar(
+            (0, 0), (ROUND_PROGRESS_WIDTH, ROUND_PROGRESS_HEIGHT),
+            direction=HorizontalFillDirection.LEFT_TO_RIGHT,
+            max_value=SpaceMinerGame.ROUND_TIME, value=SpaceMinerGame.ROUND_TIME,
+            border_thickness=0
+        )
+        
+        self.append(self.round_progress_bar)
+        
+    def update_round_progress_bar(self, now):
+        n =  SpaceMinerGame.ROUND_TIME - int(round(now - self.round_start_time))
+        if n < 0:
+            n = 0
+        self.round_time_left = n
+        if self.round_time_left != self.round_time_left_old: # only update progress bar if value has changed
+            self.round_time_left_old = self.round_time_left
+            self.round_progress_bar.value = n  # SpaceMinerGame.ROUND_TIME-SpaceMinerGame.ELAPSED_TIME         
+
 
     def left_arrow_btn_event(self):
         if self.CURRENT_STATE == SpaceMinerGame.STATE_PLAYING:
@@ -389,6 +423,7 @@ class SpaceMinerGame(displayio.Group):
         elif self.CURRENT_STATE == SpaceMinerGame.STATE_PLAYING:
 
             if now <= self.round_start_time + SpaceMinerGame.ROUND_TIME:
+                self.update_round_progress_bar(now)
                 
                 if now > self.last_update_time + self.FRAME_DELAY:
 

@@ -131,5 +131,8 @@ g) in file space_miner_helpers.py, class SpaceMinerGame, function reset_round(),
 
 h) In file space_miner_helpers.py, class SpaceMinerGame, I added 'import supervisor' and I added a function x_btn_event().
    This function calls 'supervisor.reload()' which causes a software reset. The function x_btn_event() is called from within code.py.
-   
+
+i) Added a round time progress bar in the left-top of the display. This progress bar indicates the time that one has left to play
+   in the current round.
+    
 ```

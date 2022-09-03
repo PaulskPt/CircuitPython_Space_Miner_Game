@@ -82,6 +82,7 @@ while True:
                     game.down_btn_is_down = False
         game.tick()
     except KeyboardInterrupt:
+        print("KeyboardInterrupt occurred. Going into endless loop...")
         break
 
 cnt = 0

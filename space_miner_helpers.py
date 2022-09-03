@@ -211,7 +211,7 @@ class SpaceMinerGame(displayio.Group):
         self.score_shown = False
         self.state_shown = False
         
-    # Exit game to REPL
+    # Execute software reset
     def x_btn_event(self):
         supervisor.reload()
 

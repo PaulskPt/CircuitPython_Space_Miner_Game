@@ -124,7 +124,10 @@ f) in the STATE_SHOP, class SpaceMinerGame, added defines: LASER_MIN_SPEED = 1 a
    Added item "Laser Speed" to self.stats. In function update_shop_label(), added "Laser Speed".
    Using the functions: up_arrow_btn_event() and down_arrow_btn_event() to increase and decrease the value for 'self.laser_speed'.
 
-g) in file space_miner_helpers.py class paceMinerGame, function reset_round(), I changed the code to only reset the ship health progressbar
+g) in file space_miner_helpers.py, class SpaceMinerGame, function reset_round(), I changed the code to only reset the ship health progressbar
    after a GAME_OVER and not after each ROUND_END state.
+
+h) In file space_miner_helpers.py, class SpaceMinerGame, I 'import supervisor' and I added a function x_btn_event().
+   This function calls 'supervisor.reload()' which causes a software reset. The function x_btn_event() is called from within code.py.
    
 ```

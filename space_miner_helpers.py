@@ -160,7 +160,8 @@ class SpaceMinerGame(displayio.Group):
         HEALTH_PROGRESS_WIDTH = 80
         HEALTH_PROGRESS_HEIGHT = 8
         self.health_progress_bar = HorizontalProgressBar(
-            (self.display_size[0] - 80, 0), (HEALTH_PROGRESS_WIDTH, HEALTH_PROGRESS_HEIGHT),
+            (self.display_size[0] - 80, 0), 
+            (HEALTH_PROGRESS_WIDTH, HEALTH_PROGRESS_HEIGHT),
             direction=HorizontalFillDirection.LEFT_TO_RIGHT,
             max_value=self.stats["ship_health"], value=self.stats["ship_health"],
             border_thickness=0
@@ -182,6 +183,9 @@ class SpaceMinerGame(displayio.Group):
         self.round_progress_bar = HorizontalProgressBar(
             (0, 0), (ROUND_PROGRESS_WIDTH, ROUND_PROGRESS_HEIGHT),
             direction=HorizontalFillDirection.LEFT_TO_RIGHT,
+            fill_color=0x990099,
+            outline_color=0x0000FF,
+            bar_color=0xFF0000,
             max_value=SpaceMinerGame.ROUND_TIME, value=SpaceMinerGame.ROUND_TIME,
             border_thickness=0
         )

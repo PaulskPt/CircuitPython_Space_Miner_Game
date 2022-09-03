@@ -163,11 +163,7 @@ class SpaceMinerGame(displayio.Group):
         )
 
         self.append(self.health_progress_bar)
-        
-    # added by @PaulskPt
-    def get_current_state(self):
-        return self.CURRENT_STATE
-    
+
     def left_arrow_btn_event(self):
         if self.CURRENT_STATE == SpaceMinerGame.STATE_PLAYING:
             self.ship.left_arrow_btn_event()
@@ -336,7 +332,6 @@ class SpaceMinerGame(displayio.Group):
         self.round_score -= self.ores_missed
         self.total_score += self.round_score
         self.total_collected_ore += self.round_collected_ore
-        #self.round_end_lbl.text = f"ore: {self.round_collected_ore}\nores_missed: {self.ores_missed}\nround score: {self.round_score}\nTotal score: {self.total_score}"
         if not self.state_shown:
             print("update_round_end_info(): self.CURRENT_STATE=", SpaceMinerGame.state_dict[self.CURRENT_STATE])
             self.state_shown = True
@@ -349,8 +344,6 @@ class SpaceMinerGame(displayio.Group):
         for ore in self.ores:     # idem
             ore.hidden = True
         
-        # print("line 353: show_score(): self.score_shown= {}\n\tself.round_end_group.hidden= {}".format(self.score_shown,self.round_end_group.hidden))
-        #if not self.score_shown:
         if self.CURRENT_STATE == SpaceMinerGame.STATE_GAME_ROUND_END:
             t0 = f"ROUND END\n"
         elif self.CURRENT_STATE == SpaceMinerGame.STATE_GAME_OVER:

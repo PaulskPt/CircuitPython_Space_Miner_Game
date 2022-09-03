@@ -103,10 +103,12 @@ c) In file space_miner_helpers.py, class SpaceMinerGame,
     print(n, end='')
     print(" microeconds")
     
-d) I experienced that the game score was only shown at a 'game over' or 'round end' during the first game. 
-   During @☺Foamyguys stream on Twitch.tv on Saturday September 3, 2022, it revealed that, while using CircuitPython v.8.0.0-beta0,
-   I was using /lib/Adafruit_display_text/...mpy files that were a bit outdated (March 28, 2022). After I replaced these files 
-   by ones with a date of August 28, 2022, the problem was solved.
+d) I experienced that the game score was only shown at a 'game over' or 'round end' during the first round. In subsequent rounds
+   the game score was only shown in REPL, not on the display. 
+   During @☺Foamyguys stream on Twitch.tv on Saturday September 3, 2022, it revealed that, while the Pimoroni PICO SYSTEM device,
+   that I was using, was flashed with CircuitPython firmware version: CircuitPython v.8.0.0-beta0, however the .mpy files in
+   /lib/Adafruit_display_text were a bit outdated (March 28, 2022). After I replaced these files by ones with a date of 
+   August 26, 2022, the problem of not displaying the game score in rounds >= 2, was solved.
 
    I added the following mods to space_miner_helpers.py:
    To have the score shown at every STATE_GAME_OVER and STATE_GAME_ROUND_END, in class SpaceMinderGame, 
@@ -127,7 +129,7 @@ f) in the STATE_SHOP, class SpaceMinerGame, added defines: LASER_MIN_SPEED = 1 a
 g) in file space_miner_helpers.py, class SpaceMinerGame, function reset_round(), I changed the code to only reset the ship health progressbar
    after a GAME_OVER and not after each ROUND_END state.
 
-h) In file space_miner_helpers.py, class SpaceMinerGame, I 'import supervisor' and I added a function x_btn_event().
+h) In file space_miner_helpers.py, class SpaceMinerGame, I added 'import supervisor' and I added a function x_btn_event().
    This function calls 'supervisor.reload()' which causes a software reset. The function x_btn_event() is called from within code.py.
    
 ```
